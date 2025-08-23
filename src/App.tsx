@@ -380,6 +380,8 @@ const App: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [effectsEnabled, setEffectsEnabled] = useState(true);
   const [matrixIntensity, setMatrixIntensity] = useState(50);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   
   // 使用增强的数据钩子
   const { 
@@ -586,7 +588,10 @@ const App: React.FC = () => {
                   <hr className="border-gray-700" />
                   
                   {/* 传统选项 */}
-                  <button className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded text-sm">
+                  <button 
+                    onClick={() => setIsSettingsOpen(true)}
+                    className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded text-sm"
+                  >
                     <Settings className="w-4 h-4 inline mr-2" />
                     Settings
                   </button>
@@ -597,7 +602,10 @@ const App: React.FC = () => {
                     <RefreshCw className="w-4 h-4 inline mr-2" />
                     Manual Refresh
                   </button>
-                  <button className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded text-sm">
+                  <button 
+                    onClick={() => setIsHelpOpen(true)}
+                    className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded text-sm"
+                  >
                     <HelpCircle className="w-4 h-4 inline mr-2" />
                     Help
                   </button>
@@ -859,6 +867,241 @@ const App: React.FC = () => {
             <div className="flex justify-between text-sm">
               <span className="text-gray-400">Network health:</span>
               <span className="text-white font-mono">{metrics.systemHealth.toFixed(1)}%</span>
+            </div>
+          </div>
+        </div>
+      </FeatureModal>
+
+      {/* 设置模态框 */}
+      <FeatureModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        title="System Settings"
+      >
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 mb-4">
+            <Settings className="w-6 h-6 text-blue-400" />
+            <span className="font-mono text-blue-400">Configuration Panel</span>
+          </div>
+
+          <div className="space-y-4">
+            {/* 性能设置 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Zap className="w-4 h-4 text-yellow-400" />
+                Performance Settings
+              </h4>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300 text-sm">Real-time Updates</span>
+                  <button
+                    onClick={() => setIsRealTimeEnabled(!isRealTimeEnabled)}
+                    className={`px-3 py-1 rounded text-xs font-mono ${
+                      isRealTimeEnabled ? 'bg-green-500/20 text-green-400' : 'bg-gray-600 text-gray-400'
+                    }`}
+                  >
+                    {isRealTimeEnabled ? 'ENABLED' : 'DISABLED'}
+                  </button>
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-400">Refresh Interval</span>
+                    <span className="text-cyan-400">{refreshInterval}ms</span>
+                  </div>
+                  <select 
+                    value={refreshInterval}
+                    onChange={(e) => setRefreshInterval(Number(e.target.value))}
+                    className="w-full bg-gray-700 text-white text-sm rounded p-2 border border-gray-600"
+                  >
+                    <option value={1000}>1000ms - High Performance</option>
+                    <option value={3000}>3000ms - Balanced</option>
+                    <option value={5000}>5000ms - Power Saver</option>
+                    <option value={10000}>10000ms - Eco Mode</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* 视觉设置 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Eye className="w-4 h-4 text-purple-400" />
+                Visual Effects
+              </h4>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-300 text-sm">Matrix Rain & Data Streams</span>
+                  <button
+                    onClick={() => setEffectsEnabled(!effectsEnabled)}
+                    className={`px-3 py-1 rounded text-xs font-mono ${
+                      effectsEnabled ? 'bg-cyan-500/20 text-cyan-400' : 'bg-gray-600 text-gray-400'
+                    }`}
+                  >
+                    {effectsEnabled ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+                <div>
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-gray-400">Matrix Intensity</span>
+                    <span className="text-cyan-400">{matrixIntensity}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="10"
+                    max="100"
+                    step="10"
+                    value={matrixIntensity}
+                    onChange={(e) => setMatrixIntensity(Number(e.target.value))}
+                    className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>Low</span>
+                    <span>High</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 系统信息 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Database className="w-4 h-4 text-green-400" />
+                System Status
+              </h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Version</span>
+                  <span className="text-white font-mono">Neural v2.0</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Connection</span>
+                  <span className={`font-mono ${connectionStatus === 'connected' ? 'text-green-400' : 'text-red-400'}`}>
+                    {connectionStatus.toUpperCase()}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Active Streams</span>
+                  <span className="text-cyan-400 font-mono">{activeStreams.size}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Threat Level</span>
+                  <span className={`font-mono ${
+                    metrics.threatLevel === 'LOW' ? 'text-green-400' : 
+                    metrics.threatLevel === 'MEDIUM' ? 'text-yellow-400' : 'text-red-400'
+                  }`}>
+                    {metrics.threatLevel}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </FeatureModal>
+
+      {/* 帮助模态框 */}
+      <FeatureModal
+        isOpen={isHelpOpen}
+        onClose={() => setIsHelpOpen(false)}
+        title="Help & Documentation"
+      >
+        <div className="space-y-6">
+          <div className="flex items-center gap-3 mb-4">
+            <HelpCircle className="w-6 h-6 text-blue-400" />
+            <span className="font-mono text-blue-400">User Guide</span>
+          </div>
+
+          <div className="space-y-4">
+            {/* 快速开始 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Play className="w-4 h-4 text-green-400" />
+                Quick Start
+              </h4>
+              <div className="space-y-2 text-sm text-gray-300">
+                <p>1. <strong className="text-white">Start Live Analysis</strong> - Monitor real-time contribution streams</p>
+                <p>2. <strong className="text-white">Analyze GitHub</strong> - Deep dive into repository analytics</p>
+                <p>3. <strong className="text-white">Scan Blockchain</strong> - Track on-chain activities and transactions</p>
+                <p>4. <strong className="text-white">Configure Settings</strong> - Adjust performance and visual effects</p>
+              </div>
+            </div>
+
+            {/* 功能说明 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Brain className="w-4 h-4 text-purple-400" />
+                Features
+              </h4>
+              <div className="space-y-2 text-sm text-gray-300">
+                <p><strong className="text-cyan-400">Anti-Sybil Intelligence:</strong> AI-powered detection of coordinated inauthentic behavior</p>
+                <p><strong className="text-green-400">Cross-Platform Verification:</strong> Account correlation across GitHub, Discord, and social media</p>
+                <p><strong className="text-blue-400">Real-time Analytics:</strong> Live monitoring with 1-10 second refresh intervals</p>
+                <p><strong className="text-purple-400">Neural Processing:</strong> Advanced behavioral pattern recognition</p>
+              </div>
+            </div>
+
+            {/* 控制说明 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Settings className="w-4 h-4 text-yellow-400" />
+                Controls
+              </h4>
+              <div className="space-y-2 text-sm text-gray-300">
+                <p><strong className="text-white">Options Menu:</strong> Access real-time controls and visual settings</p>
+                <p><strong className="text-white">Matrix Intensity:</strong> Adjust background effect strength (10-100)</p>
+                <p><strong className="text-white">Refresh Rate:</strong> Control data update frequency for performance</p>
+                <p><strong className="text-white">Visual Effects:</strong> Toggle animations and background effects</p>
+              </div>
+            </div>
+
+            {/* 数据说明 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Activity className="w-4 h-4 text-red-400" />
+                Metrics Explained
+              </h4>
+              <div className="space-y-1 text-sm text-gray-300">
+                <p><strong className="text-cyan-400">Active Contributors:</strong> Verified authentic users</p>
+                <p><strong className="text-purple-400">AI Processing Score:</strong> Neural analysis confidence level</p>
+                <p><strong className="text-green-400">System Health:</strong> Infrastructure performance status</p>
+                <p><strong className="text-green-400">Authenticity Rate:</strong> Percentage of verified non-Sybil accounts</p>
+                <p><strong className="text-red-400">Sybil Detected:</strong> Number of blocked suspicious accounts</p>
+                <p><strong className="text-purple-400">Network Latency:</strong> Average response time in milliseconds</p>
+              </div>
+            </div>
+
+            {/* 联系信息 */}
+            <div className="p-4 bg-gray-800/30 rounded border border-gray-700">
+              <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-blue-400" />
+                Resources
+              </h4>
+              <div className="space-y-2 text-sm">
+                <p className="text-gray-300">
+                  <strong className="text-white">GitHub:</strong>{' '}
+                  <a 
+                    href="https://github.com/0xClareYang/contri-ai-hackathon" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-cyan-400 hover:text-cyan-300 underline"
+                  >
+                    0xClareYang/contri-ai-hackathon
+                  </a>
+                </p>
+                <p className="text-gray-300">
+                  <strong className="text-white">Production:</strong>{' '}
+                  <a 
+                    href="https://contri-ai.vercel.app" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-cyan-400 hover:text-cyan-300 underline"
+                  >
+                    contri-ai.vercel.app
+                  </a>
+                </p>
+                <p className="text-gray-300">
+                  <strong className="text-white">Author:</strong> 0xClareYang
+                </p>
+              </div>
             </div>
           </div>
         </div>
