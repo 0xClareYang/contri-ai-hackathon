@@ -1,6 +1,6 @@
 # Contri-AI: Web3 Neural Analytics Platform
 
-A cyberpunk-themed Web3 analytics platform that provides real-time intelligence for decentralized contributions.
+A Web3 analytics platform that provides real-time intelligence for decentralized contributions.
 
 ## Features
 
