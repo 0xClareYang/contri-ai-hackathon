@@ -1,4 +1,4 @@
-# Contri-AI: Web3 Neural Analytics Platform
+# Contri-AI
 
 A Web3 analytics platform that provides real-time intelligence for decentralized contributions.
 
