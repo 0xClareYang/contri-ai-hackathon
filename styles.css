@@ -1,0 +1,244 @@
+/* 赛博朋克主题CSS */
+:root {
+  --cyber-primary: #00ffff;
+  --cyber-secondary: #ff0080;
+  --cyber-success: #00ff41;
+  --cyber-warning: #ffaa00;
+  --cyber-danger: #ff1744;
+  --cyber-bg-primary: #0a0a0f;
+  --cyber-bg-secondary: #1a1a2e;
+  --cyber-bg-tertiary: #16213e;
+  --cyber-text-primary: #ffffff;
+  --cyber-text-secondary: #b8c5d1;
+  --cyber-text-muted: #64748b;
+  --cyber-border: #334155;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  background: var(--cyber-bg-primary);
+  color: var(--cyber-text-primary);
+  overflow-x: hidden;
+}
+
+/* 渐变文字效果 */
+.gradient-text {
+  background: linear-gradient(45deg, var(--cyber-primary), var(--cyber-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+.gradient-text-secondary {
+  background: linear-gradient(45deg, var(--cyber-success), var(--cyber-warning));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 霓虹发光效果 */
+.neon-glow {
+  box-shadow: 
+    0 0 10px var(--cyber-primary),
+    0 0 20px var(--cyber-primary),
+    0 0 40px var(--cyber-primary);
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--cyber-primary);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--cyber-primary), 0 0 30px var(--cyber-primary);
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px var(--cyber-primary);
+  }
+  to {
+    text-shadow: 0 0 20px var(--cyber-primary), 0 0 30px var(--cyber-primary);
+  }
+}
+
+/* 矩阵雨效果 */
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+.matrix-char {
+  position: absolute;
+  color: var(--cyber-primary);
+  font-family: 'Courier New', monospace;
+  animation: matrix-rain 3s linear infinite;
+}
+
+/* 数据流效果 */
+@keyframes data-stream {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.data-stream {
+  position: absolute;
+  width: 2px;
+  height: 100px;
+  background: linear-gradient(to bottom, transparent, var(--cyber-primary), transparent);
+  animation: data-stream 2s linear infinite;
+}
+
+/* 按钮样式 */
+.cyber-button {
+  padding: 12px 24px;
+  background: transparent;
+  border: 1px solid var(--cyber-primary);
+  color: var(--cyber-primary);
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-button:hover {
+  background: var(--cyber-primary);
+  color: var(--cyber-bg-primary);
+  box-shadow: 0 0 20px var(--cyber-primary);
+}
+
+.cyber-button:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.cyber-button:hover:before {
+  left: 100%;
+}
+
+/* 卡片样式 */
+.cyber-card {
+  background: rgba(26, 26, 46, 0.8);
+  border: 1px solid var(--cyber-border);
+  backdrop-filter: blur(10px);
+  padding: 24px;
+  position: relative;
+}
+
+.cyber-card:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyber-primary), transparent);
+  animation: scan-line 3s linear infinite;
+}
+
+@keyframes scan-line {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* 进度条样式 */
+.cyber-progress {
+  width: 100%;
+  height: 4px;
+  background: var(--cyber-bg-tertiary);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.cyber-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--cyber-primary), var(--cyber-secondary));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  position: relative;
+}
+
+.cyber-progress-bar:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: progress-glow 2s ease-in-out infinite;
+}
+
+@keyframes progress-glow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .gradient-text {
+    font-size: 2rem;
+  }
+  
+  .gradient-text-secondary {
+    font-size: 1.5rem;
+  }
+  
+  .cyber-card {
+    padding: 16px;
+  }
+}
