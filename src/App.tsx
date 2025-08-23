@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion } from 'framer-motion';
 import { 
   Activity, 
   Users, 
@@ -21,11 +21,9 @@ import {
   Pause,
   Volume2,
   VolumeX,
-  Maximize,
   Settings,
   HelpCircle,
   Star,
-  Heart,
   Globe,
   Brain,
   Code,
