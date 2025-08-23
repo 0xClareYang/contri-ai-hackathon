@@ -1,0 +1,88 @@
+name: 🚀 Build and Deploy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: 🧪 Test and Lint
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 🔧 Install dependencies
+      run: npm ci
+
+    - name: 🔍 Run TypeScript check
+      run: npm run type-check
+
+    - name: 🧹 Run ESLint
+      run: npm run lint
+
+    - name: 🎨 Check Prettier formatting
+      run: npm run format -- --check
+
+    - name: 🏗️ Build application
+      run: npm run build
+      env:
+        CI: true
+
+    - name: 📊 Upload build artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-files
+        path: build/
+        retention-days: 1
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: test
+    name: 🔍 Lighthouse Performance Audit
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: 🔧 Install dependencies
+      run: npm ci
+
+    - name: 🏗️ Build application
+      run: npm run build
+
+    - name: 🔍 Run Lighthouse CI
+      run: |
+        npm install -g @lhci/cli@0.12.x
+        lhci autorun
+      env:
+        LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test, lighthouse]
+    name: 🚀 Deploy to Production  
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: ✅ Deployment Success
+      run: |
+        echo "🎉 All checks passed!"
+        echo "🚀 Vercel will automatically deploy from main branch"
+        echo "📱 Production URL: https://contri-ai.vercel.app"

@@ -1,13 +1,38 @@
 {
-  "name": "contri-ai-cyberpunk-platform",
-  "version": "1.0.0",
-  "description": "Web3 Neural Analytics Platform with Cyberpunk Design",
+  "name": "contri-ai-hackathon",
+  "version": "2.0.0",
+  "description": "AI-powered Web3 Neural Analytics Platform - Revolutionary anti-sybil mechanism for fair ecosystem distribution",
   "main": "src/index.tsx",
+  "homepage": "https://contri-ai.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0xClareYang/contri-ai-hackathon.git"
+  },
+  "author": "0xClareYang",
+  "license": "MIT",
+  "keywords": [
+    "web3",
+    "analytics", 
+    "blockchain",
+    "anti-sybil",
+    "hackathon",
+    "cyberpunk",
+    "react",
+    "typescript",
+    "ai",
+    "neural-analytics"
+  ],
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write src/**/*.{ts,tsx,css}",
+    "type-check": "tsc --noEmit",
+    "analyze": "npm run build && npx source-map-explorer 'build/static/js/*.js'",
+    "clean": "rm -rf build node_modules",
+    "reinstall": "npm run clean && npm install"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -20,6 +45,14 @@
     "lucide-react": "^0.292.0",
     "clsx": "^2.0.0"
   },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.33.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "prettier": "^3.0.0"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -31,5 +64,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }
