@@ -30,7 +30,7 @@ Contri-AI is a cutting-edge Web3 analytics platform that provides real-time inte
 - **Historical Activity Analysis** → Account age, consistency patterns, and social network mapping
 - **Dynamic Risk Scoring** → Real-time fraud detection and reputation management
 
-### 🎨 Immersive Cyberpunk Experience
+### 🎨 Immersive Experience
 - **Matrix Rain UI Design** → Neon-glowing components meet futuristic aesthetics
 - **Responsive Architecture** → Seamless experience across desktop and mobile devices
 - **Interactive Animations** → Smooth transitions powered by Framer Motion
@@ -49,9 +49,9 @@ Our platform leverages modern web technologies for optimal performance:
 | **Build System** | React Scripts 5.0.1 for development and production |
 | **Deployment** | Vercel for global CDN distribution |
 
-## 🎯 Live Demo & Features
+## 🎯Features
 
-**🌐 Production URL:** `https://contri-ai-hackathon.vercel.app`
+**🌐 Production URL:** `https://contri-ai.vercel.app`
 
 ### Try These Core Functionalities:
 
@@ -74,16 +74,6 @@ Our platform leverages modern web technologies for optimal performance:
    - Responsive navigation with slide-out menu
    - Touch-friendly interface optimization
    - Consistent functionality across all devices
-
-## 🎪 4-Minute Hackathon Demo Flow
-
-### **Problem (45s)**: *"Current Web3 airdrops suffer from 80% bot participation. Traditional snapshot-based distributions reward farmers, not genuine contributors."*
-
-### **Solution (90s)**: *"Contri-AI uses AI to analyze behavioral patterns across Discord, GitHub, and social platforms, identifying authentic long-term contributors versus coordinated farming operations."*
-
-### **Technology (75s)**: *"Our cross-platform identity verification system correlates account histories, activity patterns, and social graphs to create tamper-resistant reputation scores."*
-
-### **Impact (30s)**: *"Targeting 85% reduction in farming accounts and 300% increase in genuine contributor rewards. Starting with digital nomad communities, expanding to DeFi ecosystems."*
 
 ## 📱 Interface Preview
 
