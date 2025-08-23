@@ -25,6 +25,30 @@ body {
   background: var(--cyber-bg-primary);
   color: var(--cyber-text-primary);
   overflow-x: hidden;
+  margin: 0;
+  width: 100%;
+}
+
+/* 确保根容器居中 */
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* 主容器样式 */
+.min-h-screen {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 最大宽度容器居中 */
+.max-w-7xl {
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
 }
 
 /* 渐变文字效果 */
@@ -240,5 +264,18 @@ body {
   
   .cyber-card {
     padding: 16px;
+  }
+  
+  /* 移动端确保全宽 */
+  .max-w-7xl {
+    max-width: 100%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* 修复移动端布局 */
+  .min-h-screen {
+    width: 100vw;
+    overflow-x: hidden;
   }
 }
