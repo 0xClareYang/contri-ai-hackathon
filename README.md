@@ -19,7 +19,7 @@
 
   🎨 Immersive Experience
 
-  - Cyberpunk UI Design → Matrix rain effects meet neon-glowing components
+  - UI Design → Matrix rain effects meet neon-glowing components
   - Responsive Architecture → Seamless experience across desktop and mobile devices
   - Interactive Animations → Smooth transitions powered by Framer Motion
 
