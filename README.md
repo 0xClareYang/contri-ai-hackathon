@@ -7,8 +7,7 @@
   ⚡ What is Contri-AI?
 
   Contri-AI is a cutting-edge Web3 analytics platform. It provides real-time intelligence for decentralized
-  contributions, transforming complex blockchain data into actionable insights. Built with a cyberpunk aesthetic
-  and powered by advanced neural processing algorithms.
+  contributions, transforming complex blockchain data into actionable insights.Powered by advanced neural processing algorithms.
 
   🌟 Core Features
 
