@@ -30,7 +30,7 @@ Contri-AI is a cutting-edge Web3 analytics platform that provides real-time inte
 - **Historical Activity Analysis** → Account age, consistency patterns, and social network mapping
 - **Dynamic Risk Scoring** → Real-time fraud detection and reputation management
 
-### 🎨 Immersive Cyberpunk Experience
+### 🎨 Immersive Experience
 - **Matrix Rain UI Design** → Neon-glowing components meet futuristic aesthetics
 - **Responsive Architecture** → Seamless experience across desktop and mobile devices
 - **Interactive Animations** → Smooth transitions powered by Framer Motion
