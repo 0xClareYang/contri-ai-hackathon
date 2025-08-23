@@ -793,27 +793,131 @@ const App: React.FC = () => {
         </motion.section>
       </main>
 
-      {/* 功能模态框 */}
+      {/* 功能模态框 - 增强版Live Analysis */}
       <FeatureModal
         isOpen={isLiveAnalysisOpen}
         onClose={() => setIsLiveAnalysisOpen(false)}
-        title="Live Analysis Dashboard"
+        title="🔴 Live Analysis Dashboard"
       >
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-700/50 rounded">
-              <h4 className="text-sm font-bold text-blue-400 mb-2">Real-time Events</h4>
-              <div className="text-2xl font-bold text-white">{metrics.githubRate + metrics.blockchainRate}</div>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+              <span className="font-mono text-green-400 text-lg">SYSTEM ACTIVE</span>
             </div>
-            <div className="p-4 bg-gray-700/50 rounded">
-              <h4 className="text-sm font-bold text-green-400 mb-2">Active Users</h4>
-              <div className="text-2xl font-bold text-white">{metrics.activeContributors}</div>
+            <div className="flex items-center gap-2">
+              <Wifi className="w-4 h-4 text-green-400" />
+              <span className="text-xs text-gray-400">Latency: {metrics.networkLatency}ms</span>
             </div>
           </div>
-          <div className="p-4 bg-gray-700/30 rounded">
-            <p className="text-gray-300 text-sm">
-              Live analysis is monitoring {activeStreams.size || 3} data streams with AI-powered insights...
-            </p>
+
+          {/* 实时数据流 */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/20 rounded-lg border border-blue-400/30"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="w-5 h-5 text-blue-400" />
+                <span className="text-sm font-mono text-blue-400">GITHUB</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{metrics.githubRate}</div>
+              <div className="text-xs text-gray-400">events/min</div>
+            </motion.div>
+
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-purple-900/30 to-purple-800/20 rounded-lg border border-purple-400/30"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 2.2, repeat: Infinity }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Database className="w-5 h-5 text-purple-400" />
+                <span className="text-sm font-mono text-purple-400">BLOCKCHAIN</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{metrics.blockchainRate}</div>
+              <div className="text-xs text-gray-400">tx/min</div>
+            </motion.div>
+
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-green-900/30 to-green-800/20 rounded-lg border border-green-400/30"
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 1.8, repeat: Infinity }}
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <Users className="w-5 h-5 text-green-400" />
+                <span className="text-sm font-mono text-green-400">SOCIAL</span>
+              </div>
+              <div className="text-2xl font-bold text-white">{metrics.socialRate}</div>
+              <div className="text-xs text-gray-400">signals/min</div>
+            </motion.div>
+          </div>
+
+          {/* AI 分析状态 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-cyan-400/30">
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-white font-mono flex items-center gap-2">
+                <Brain className="w-5 h-5 text-cyan-400" />
+                Neural Processing Engine
+              </h4>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-sm text-green-400">ACTIVE</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-sm text-gray-400">Authenticity Score</div>
+                <div className="text-xl font-bold text-green-400">{metrics.authenticityRate.toFixed(1)}%</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Sybil Detected</div>
+                <div className="text-xl font-bold text-red-400">{metrics.sybilDetected}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 活动日志 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-gray-600">
+            <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-yellow-400" />
+              Live Activity Feed
+            </h4>
+            <div className="space-y-2 max-h-32 overflow-y-auto">
+              <div className="text-sm text-gray-300">
+                <span className="text-green-400">[{new Date().toLocaleTimeString()}]</span> ✅ New contributor verified: 0x7f2a...
+              </div>
+              <div className="text-sm text-gray-300">
+                <span className="text-blue-400">[{new Date(Date.now() - 30000).toLocaleTimeString()}]</span> 📊 GitHub: {Math.floor(metrics.githubRate * 1.2)} commits analyzed
+              </div>
+              <div className="text-sm text-gray-300">
+                <span className="text-purple-400">[{new Date(Date.now() - 45000).toLocaleTimeString()}]</span> ⛓️ Blockchain: {metrics.blockchainRate * 3} transactions processed
+              </div>
+              <div className="text-sm text-gray-300">
+                <span className="text-red-400">[{new Date(Date.now() - 75000).toLocaleTimeString()}]</span> 🚨 Sybil pattern detected: Account flagged
+              </div>
+            </div>
+          </div>
+
+          {/* 控制面板 */}
+          <div className="flex items-center justify-between p-3 bg-gray-800/60 rounded border border-gray-600">
+            <div className="flex items-center gap-3">
+              <button className="px-3 py-1 bg-green-500/20 text-green-400 border border-green-400 rounded text-sm font-mono">
+                🔴 LIVE
+              </button>
+              <span className="text-gray-400 text-sm">Auto-refresh: {refreshInterval/1000}s</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-gray-400">Threat Level:</span>
+                <span className={`font-mono text-sm ${
+                  metrics.threatLevel === 'LOW' ? 'text-green-400' : 
+                  metrics.threatLevel === 'MEDIUM' ? 'text-yellow-400' : 'text-red-400'
+                }`}>
+                  {metrics.threatLevel}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </FeatureModal>
@@ -821,25 +925,162 @@ const App: React.FC = () => {
       <FeatureModal
         isOpen={isGithubAnalysisOpen}
         onClose={() => setIsGithubAnalysisOpen(false)}
-        title="GitHub Analysis Console"
+        title="🐙 GitHub Analysis Console"
       >
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <GitBranch className="w-5 h-5 text-blue-400" />
-            <span className="font-mono text-green-400">Analyzing repositories...</span>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <GitBranch className="w-6 h-6 text-blue-400" />
+              <span className="font-mono text-green-400 text-lg">REPOSITORY SCANNING</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-blue-400">ACTIVE</span>
+            </div>
           </div>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Commits processed:</span>
-              <span className="text-white font-mono">{Math.floor(metrics.githubRate * 1.5)}</span>
+
+          {/* 仓库统计 */}
+          <div className="grid grid-cols-2 gap-4">
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/20 rounded-lg border border-blue-400/30"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Code className="w-5 h-5 text-blue-400" />
+                <span className="text-sm font-mono text-blue-400">COMMITS ANALYZED</span>
+              </div>
+              <div className="text-3xl font-bold text-white">{Math.floor(metrics.githubRate * 2.3)}</div>
+              <div className="text-xs text-gray-400">in last hour</div>
+            </motion.div>
+
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-green-900/30 to-green-800/20 rounded-lg border border-green-400/30"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Users className="w-5 h-5 text-green-400" />
+                <span className="text-sm font-mono text-green-400">CONTRIBUTORS</span>
+              </div>
+              <div className="text-3xl font-bold text-white">{Math.floor(metrics.activeContributors * 0.15)}</div>
+              <div className="text-xs text-gray-400">unique developers</div>
+            </motion.div>
+          </div>
+
+          {/* 代码质量分析 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-cyan-400/30">
+            <h4 className="text-white font-mono mb-4 flex items-center gap-2">
+              <Brain className="w-5 h-5 text-cyan-400" />
+              AI Code Quality Analysis
+            </h4>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-400">{metrics.aiScore.toFixed(1)}%</div>
+                <div className="text-sm text-gray-400">Quality Score</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-400">{Math.floor(metrics.authenticityRate)}</div>
+                <div className="text-sm text-gray-400">Authenticity</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-400">{Math.floor(metrics.githubRate * 0.8)}</div>
+                <div className="text-sm text-gray-400">Issues Fixed</div>
+              </div>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Contributors found:</span>
-              <span className="text-white font-mono">{Math.floor(metrics.activeContributors * 0.3)}</span>
+          </div>
+
+          {/* 最近活动 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-gray-600">
+            <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-yellow-400" />
+              Recent Repository Activity
+            </h4>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-2 bg-gray-700/30 rounded">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <GitBranch className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-white">feat: Add anti-sybil detection</div>
+                    <div className="text-xs text-gray-400">by 0xDeveloper123</div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-400">2 min ago</div>
+              </div>
+
+              <div className="flex items-center justify-between p-2 bg-gray-700/30 rounded">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <Code className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-white">fix: Improve neural processing</div>
+                    <div className="text-xs text-gray-400">by 0xContributor456</div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-400">8 min ago</div>
+              </div>
+
+              <div className="flex items-center justify-between p-2 bg-gray-700/30 rounded">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                    <Users className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-white">docs: Update API documentation</div>
+                    <div className="text-xs text-gray-400">by 0xDocWriter789</div>
+                  </div>
+                </div>
+                <div className="text-xs text-gray-400">15 min ago</div>
+              </div>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">AI Score:</span>
-              <span className="text-white font-mono">{metrics.aiScore.toFixed(1)}%</span>
+          </div>
+
+          {/* 贡献者排行 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-yellow-400/30">
+            <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+              <Star className="w-5 h-5 text-yellow-400" />
+              Top Contributors This Week
+            </h4>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="text-yellow-400">🥇</div>
+                  <span className="text-white">0xClareYang</span>
+                </div>
+                <span className="text-green-400 font-mono">{Math.floor(metrics.githubRate * 0.4)} commits</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="text-gray-300">🥈</div>
+                  <span className="text-white">0xDeveloper123</span>
+                </div>
+                <span className="text-blue-400 font-mono">{Math.floor(metrics.githubRate * 0.3)} commits</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="text-orange-400">🥉</div>
+                  <span className="text-white">0xContributor456</span>
+                </div>
+                <span className="text-purple-400 font-mono">{Math.floor(metrics.githubRate * 0.2)} commits</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 控制面板 */}
+          <div className="flex items-center justify-between p-3 bg-gray-800/60 rounded border border-gray-600">
+            <div className="flex items-center gap-3">
+              <button className="px-3 py-1 bg-blue-500/20 text-blue-400 border border-blue-400 rounded text-sm font-mono">
+                🐙 SCANNING
+              </button>
+              <span className="text-gray-400 text-sm">Last update: {new Date().toLocaleTimeString()}</span>
+            </div>
+            <div className="text-sm text-gray-400">
+              Processing: <span className="text-cyan-400">{metrics.githubRate}</span> events/min
             </div>
           </div>
         </div>
@@ -848,25 +1089,181 @@ const App: React.FC = () => {
       <FeatureModal
         isOpen={isBlockchainScanOpen}
         onClose={() => setIsBlockchainScanOpen(false)}
-        title="Blockchain Scanner"
+        title="⛓️ Blockchain Scanner"
       >
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Database className="w-5 h-5 text-pink-400" />
-            <span className="font-mono text-green-400">Scanning blockchain...</span>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Database className="w-6 h-6 text-purple-400" />
+              <span className="font-mono text-green-400 text-lg">BLOCKCHAIN MONITORING</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
+              <span className="text-sm text-purple-400">SCANNING</span>
+            </div>
           </div>
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Blocks scanned:</span>
-              <span className="text-white font-mono">{metrics.blockchainRate * 10}</span>
+
+          {/* 网络状态 */}
+          <div className="grid grid-cols-3 gap-4">
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-purple-900/30 to-purple-800/20 rounded-lg border border-purple-400/30"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Activity className="w-5 h-5 text-purple-400" />
+                <span className="text-sm font-mono text-purple-400">BLOCKS</span>
+              </div>
+              <div className="text-3xl font-bold text-white">{metrics.blockchainRate * 12}</div>
+              <div className="text-xs text-gray-400">scanned/min</div>
+            </motion.div>
+
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/20 rounded-lg border border-blue-400/30"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Zap className="w-5 h-5 text-blue-400" />
+                <span className="text-sm font-mono text-blue-400">TRANSACTIONS</span>
+              </div>
+              <div className="text-3xl font-bold text-white">{metrics.processedTransactions}</div>
+              <div className="text-xs text-gray-400">processed</div>
+            </motion.div>
+
+            <motion.div 
+              className="p-4 bg-gradient-to-br from-green-900/30 to-green-800/20 rounded-lg border border-green-400/30"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <Shield className="w-5 h-5 text-green-400" />
+                <span className="text-sm font-mono text-green-400">NETWORK</span>
+              </div>
+              <div className="text-3xl font-bold text-white">{metrics.systemHealth.toFixed(1)}%</div>
+              <div className="text-xs text-gray-400">health</div>
+            </motion.div>
+          </div>
+
+          {/* 区块链网络 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-cyan-400/30">
+            <h4 className="text-white font-mono mb-4 flex items-center gap-2">
+              <Globe className="w-5 h-5 text-cyan-400" />
+              Multi-Chain Analysis
+            </h4>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-3 bg-gray-700/30 rounded">
+                <div className="text-lg font-bold text-blue-400">ETH</div>
+                <div className="text-2xl font-mono text-white">{Math.floor(metrics.blockchainRate * 0.4)}</div>
+                <div className="text-xs text-gray-400">tx/min</div>
+              </div>
+              <div className="text-center p-3 bg-gray-700/30 rounded">
+                <div className="text-lg font-bold text-purple-400">BSC</div>
+                <div className="text-2xl font-mono text-white">{Math.floor(metrics.blockchainRate * 0.3)}</div>
+                <div className="text-xs text-gray-400">tx/min</div>
+              </div>
+              <div className="text-center p-3 bg-gray-700/30 rounded">
+                <div className="text-lg font-bold text-orange-400">POLYGON</div>
+                <div className="text-2xl font-mono text-white">{Math.floor(metrics.blockchainRate * 0.3)}</div>
+                <div className="text-xs text-gray-400">tx/min</div>
+              </div>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Transactions found:</span>
-              <span className="text-white font-mono">{metrics.blockchainRate * 25}</span>
+          </div>
+
+          {/* 最新交易 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-gray-600">
+            <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-yellow-400" />
+              Recent Transactions
+            </h4>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <Database className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-white font-mono">0x7f2a...b8c3</div>
+                    <div className="text-xs text-gray-400">Transfer: 2.5 ETH</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-green-400">✓ Verified</div>
+                  <div className="text-xs text-gray-400">Block: {metrics.blockchainRate * 100 + 245}</div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center">
+                    <Lock className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-white font-mono">0x1a9c...f4d7</div>
+                    <div className="text-xs text-gray-400">Smart Contract Call</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-green-400">✓ Success</div>
+                  <div className="text-xs text-gray-400">Gas: 21,000</div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-700/30 rounded">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-sm text-white font-mono">0x9b8f...a2c1</div>
+                    <div className="text-xs text-gray-400">Token Mint</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-yellow-400">⏳ Pending</div>
+                  <div className="text-xs text-gray-400">Confirmations: 2/12</div>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-400">Network health:</span>
-              <span className="text-white font-mono">{metrics.systemHealth.toFixed(1)}%</span>
+          </div>
+
+          {/* 安全分析 */}
+          <div className="p-4 bg-gray-800/40 rounded-lg border border-red-400/30">
+            <h4 className="text-white font-mono mb-3 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-red-400" />
+              Security Analysis
+            </h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <div className="text-sm text-gray-400">Suspicious Transactions</div>
+                <div className="text-2xl font-bold text-red-400">{Math.floor(metrics.sybilDetected * 0.1)}</div>
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Active Nodes</div>
+                <div className="text-2xl font-bold text-green-400">{metrics.activeNodes}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 控制面板 */}
+          <div className="flex items-center justify-between p-3 bg-gray-800/60 rounded border border-gray-600">
+            <div className="flex items-center gap-3">
+              <button className="px-3 py-1 bg-purple-500/20 text-purple-400 border border-purple-400 rounded text-sm font-mono">
+                ⛓️ MONITORING
+              </button>
+              <span className="text-gray-400 text-sm">Sync: {metrics.energyEfficiency.toFixed(1)}%</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="text-sm text-gray-400">
+                Speed: <span className="text-purple-400">{metrics.blockchainRate}</span> blocks/min
+              </div>
+              <div className="flex items-center gap-1">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-xs text-green-400">SYNCED</span>
+              </div>
             </div>
           </div>
         </div>
