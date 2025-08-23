@@ -320,7 +320,7 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 relative overflow-x-hidden">
+    <div className="min-h-screen bg-gray-900 relative overflow-x-hidden" style={{ width: '100%', margin: '0 auto' }}>
       {/* 背景效果 */}
       <MatrixRain />
       <DataStream />
