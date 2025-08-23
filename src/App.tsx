@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Activity, 
   Users, 
@@ -16,10 +16,23 @@ import {
   Wifi,
   WifiOff,
   ChevronDown,
-  Eye
+  Eye,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
+  Settings,
+  HelpCircle,
+  Star,
+  Heart,
+  Globe,
+  Brain,
+  Code,
+  Lock
 } from 'lucide-react';
 
-// 模拟实时数据
+// 增强的实时数据钩子
 const useMockData = () => {
   const [metrics, setMetrics] = useState({
     activeContributors: 12847,
@@ -27,81 +40,178 @@ const useMockData = () => {
     systemHealth: 98.5,
     githubRate: 127,
     blockchainRate: 89,
-    socialRate: 156
+    socialRate: 156,
+    // 新增指标
+    sybilDetected: 342,
+    authenticityRate: 96.2,
+    networkLatency: 45,
+    processedTransactions: 89234,
+    activeNodes: 1247,
+    threatLevel: 'LOW',
+    energyEfficiency: 92.8
   });
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setMetrics(prev => ({
-        activeContributors: prev.activeContributors + Math.floor(Math.random() * 10 - 5),
-        aiScore: Math.max(90, Math.min(99, prev.aiScore + (Math.random() - 0.5) * 2)),
-        systemHealth: Math.max(95, Math.min(100, prev.systemHealth + (Math.random() - 0.5) * 0.5)),
-        githubRate: prev.githubRate + Math.floor(Math.random() * 20 - 10),
-        blockchainRate: prev.blockchainRate + Math.floor(Math.random() * 15 - 7),
-        socialRate: prev.socialRate + Math.floor(Math.random() * 25 - 12)
-      }));
-    }, 3000);
+  const [isRealTimeEnabled, setIsRealTimeEnabled] = useState(true);
+  const [refreshInterval, setRefreshInterval] = useState(3000);
 
-    return () => clearInterval(interval);
+  const updateMetrics = useCallback(() => {
+    setMetrics(prev => {
+      // 更智能的数据变化逻辑
+      const variance = {
+        activeContributors: Math.floor(Math.random() * 20 - 10),
+        aiScore: (Math.random() - 0.5) * 1.5,
+        systemHealth: (Math.random() - 0.5) * 0.3,
+        githubRate: Math.floor(Math.random() * 30 - 15),
+        blockchainRate: Math.floor(Math.random() * 20 - 10),
+        socialRate: Math.floor(Math.random() * 35 - 17),
+        sybilDetected: Math.floor(Math.random() * 10 - 3),
+        authenticityRate: (Math.random() - 0.5) * 0.5,
+        networkLatency: Math.floor(Math.random() * 20 - 10),
+        processedTransactions: Math.floor(Math.random() * 500 - 250),
+        activeNodes: Math.floor(Math.random() * 50 - 25),
+        energyEfficiency: (Math.random() - 0.5) * 1.0
+      };
+
+      return {
+        activeContributors: Math.max(1000, prev.activeContributors + variance.activeContributors),
+        aiScore: Math.max(85, Math.min(99.9, prev.aiScore + variance.aiScore)),
+        systemHealth: Math.max(90, Math.min(100, prev.systemHealth + variance.systemHealth)),
+        githubRate: Math.max(50, prev.githubRate + variance.githubRate),
+        blockchainRate: Math.max(30, prev.blockchainRate + variance.blockchainRate),
+        socialRate: Math.max(80, prev.socialRate + variance.socialRate),
+        sybilDetected: Math.max(100, prev.sybilDetected + variance.sybilDetected),
+        authenticityRate: Math.max(90, Math.min(99.9, prev.authenticityRate + variance.authenticityRate)),
+        networkLatency: Math.max(10, Math.min(200, prev.networkLatency + variance.networkLatency)),
+        processedTransactions: Math.max(10000, prev.processedTransactions + variance.processedTransactions),
+        activeNodes: Math.max(500, prev.activeNodes + variance.activeNodes),
+        threatLevel: prev.sybilDetected > 400 ? 'HIGH' : prev.sybilDetected > 300 ? 'MEDIUM' : 'LOW',
+        energyEfficiency: Math.max(85, Math.min(99, prev.energyEfficiency + variance.energyEfficiency))
+      };
+    });
   }, []);
 
-  return metrics;
+  useEffect(() => {
+    if (!isRealTimeEnabled) return;
+
+    const interval = setInterval(updateMetrics, refreshInterval);
+    return () => clearInterval(interval);
+  }, [isRealTimeEnabled, refreshInterval, updateMetrics]);
+
+  return { 
+    metrics, 
+    isRealTimeEnabled, 
+    setIsRealTimeEnabled, 
+    refreshInterval, 
+    setRefreshInterval,
+    manualRefresh: updateMetrics
+  };
 };
 
-// Matrix雨效果组件
-const MatrixRain: React.FC = () => {
-  const [chars, setChars] = useState<Array<{id: number, char: string, x: number, delay: number}>>([]);
+// 增强的Matrix雨效果组件
+const MatrixRain: React.FC<{ intensity?: number; isActive?: boolean }> = ({ 
+  intensity = 50, 
+  isActive = true 
+}) => {
+  const [chars, setChars] = useState<Array<{
+    id: number, 
+    char: string, 
+    x: number, 
+    delay: number,
+    speed: number,
+    opacity: number
+  }>>([]);
 
   useEffect(() => {
-    const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    if (!isActive) return;
+
+    const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン€£¥₿⧫◈◇○●◐◑◒◓';
     const newChars = [];
     
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < intensity; i++) {
       newChars.push({
         id: i,
         char: characters[Math.floor(Math.random() * characters.length)],
         x: Math.random() * 100,
-        delay: Math.random() * 3
+        delay: Math.random() * 3,
+        speed: 0.5 + Math.random() * 1.5,
+        opacity: 0.1 + Math.random() * 0.3
       });
     }
     
     setChars(newChars);
-  }, []);
+
+    // 定期更新字符
+    const updateInterval = setInterval(() => {
+      setChars(prev => prev.map(char => ({
+        ...char,
+        char: characters[Math.floor(Math.random() * characters.length)]
+      })));
+    }, 2000);
+
+    return () => clearInterval(updateInterval);
+  }, [intensity, isActive]);
+
+  if (!isActive) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden opacity-10">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {chars.map((char) => (
-        <div
+        <motion.div
           key={char.id}
-          className="matrix-char text-xs"
+          className="matrix-char text-xs font-mono text-cyan-400"
           style={{
             left: `${char.x}%`,
-            animationDelay: `${char.delay}s`
+            opacity: char.opacity,
+          }}
+          animate={{
+            y: ['-10vh', '110vh'],
+          }}
+          transition={{
+            duration: 3 / char.speed,
+            delay: char.delay,
+            repeat: Infinity,
+            ease: "linear"
           }}
         >
           {char.char}
-        </div>
+        </motion.div>
       ))}
     </div>
   );
 };
 
-// 数据流效果组件
-const DataStream: React.FC = () => {
+// 增强的数据流效果组件
+const DataStream: React.FC<{ isActive?: boolean }> = ({ isActive = true }) => {
+  const streamCount = 25;
+
+  if (!isActive) return null;
+
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      {[...Array(20)].map((_, i) => (
-        <div
-          key={i}
-          className="data-stream"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 2}s`,
-            animationDuration: `${2 + Math.random() * 2}s`
-          }}
-        />
-      ))}
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+      {[...Array(streamCount)].map((_, i) => {
+        const isHorizontal = i % 3 === 0;
+        return (
+          <motion.div
+            key={i}
+            className={`absolute ${isHorizontal ? 'h-px w-20' : 'w-px h-20'} bg-gradient-to-r from-transparent via-cyan-400 to-transparent`}
+            style={{
+              left: isHorizontal ? 0 : `${Math.random() * 100}%`,
+              top: isHorizontal ? `${Math.random() * 100}%` : 0,
+            }}
+            animate={isHorizontal ? {
+              x: ['-100px', 'calc(100vw + 100px)'],
+            } : {
+              y: ['-100px', 'calc(100vh + 100px)'],
+            }}
+            transition={{
+              duration: 2 + Math.random() * 3,
+              delay: Math.random() * 2,
+              repeat: Infinity,
+              ease: "linear",
+            }}
+          />
+        );
+      })}
     </div>
   );
 };
@@ -268,8 +378,18 @@ const App: React.FC = () => {
   const [isGithubAnalysisOpen, setIsGithubAnalysisOpen] = useState(false);
   const [isBlockchainScanOpen, setIsBlockchainScanOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [effectsEnabled, setEffectsEnabled] = useState(true);
+  const [matrixIntensity, setMatrixIntensity] = useState(50);
   
-  const metrics = useMockData();
+  // 使用增强的数据钩子
+  const { 
+    metrics, 
+    isRealTimeEnabled, 
+    setIsRealTimeEnabled, 
+    refreshInterval, 
+    setRefreshInterval,
+    manualRefresh
+  } = useMockData();
 
   const handleStartStream = (streamType: string) => {
     setActiveStreams(prev => new Set(prev).add(streamType));
@@ -299,15 +419,17 @@ const App: React.FC = () => {
       format: 'number' as const,
       color: 'var(--cyber-primary)',
       icon: <Users className="w-6 h-6" />,
-      showTrending: true
+      showTrending: true,
+      subtitle: 'Verified users'
     },
     {
       title: 'AI Processing Score',
       value: metrics.aiScore,
       format: 'score' as const,
       color: 'var(--cyber-secondary)',
-      icon: <Zap className="w-6 h-6" />,
-      showTrending: true
+      icon: <Brain className="w-6 h-6" />,
+      showTrending: true,
+      subtitle: 'Neural analysis'
     },
     {
       title: 'System Health',
@@ -315,15 +437,46 @@ const App: React.FC = () => {
       format: 'score' as const,
       color: 'var(--cyber-success)',
       icon: <Shield className="w-6 h-6" />,
-      showTrending: false
+      showTrending: false,
+      subtitle: 'Infrastructure'
+    },
+    {
+      title: 'Authenticity Rate',
+      value: metrics.authenticityRate,
+      format: 'score' as const,
+      color: '#10B981',
+      icon: <Lock className="w-6 h-6" />,
+      showTrending: true,
+      trend: 'up' as const,
+      subtitle: 'Anti-Sybil verified'
+    },
+    {
+      title: 'Sybil Detected',
+      value: metrics.sybilDetected,
+      format: 'number' as const,
+      color: '#EF4444',
+      icon: <Eye className="w-6 h-6" />,
+      showTrending: true,
+      trend: 'down' as const,
+      subtitle: 'Blocked accounts'
+    },
+    {
+      title: 'Network Latency',
+      value: metrics.networkLatency,
+      format: 'number' as const,
+      color: '#8B5CF6',
+      icon: <Activity className="w-6 h-6" />,
+      showTrending: true,
+      trend: metrics.networkLatency < 50 ? 'up' as const : 'down' as const,
+      subtitle: 'ms average'
     }
   ];
 
   return (
     <div className="min-h-screen bg-gray-900 relative overflow-x-hidden" style={{ width: '100%', margin: '0 auto' }}>
       {/* 背景效果 */}
-      <MatrixRain />
-      <DataStream />
+      <MatrixRain intensity={matrixIntensity} isActive={effectsEnabled} />
+      <DataStream isActive={effectsEnabled} />
 
       {/* 导航栏 */}
       <motion.header 
@@ -371,15 +524,84 @@ const App: React.FC = () => {
               </div>
 
               <DropdownMenu isOpen={isDropdownOpen} onToggle={() => setIsDropdownOpen(!isDropdownOpen)}>
-                <button className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700">
-                  Settings
-                </button>
-                <button className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700">
-                  Export Data
-                </button>
-                <button className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700">
-                  Help
-                </button>
+                <div className="p-2 space-y-2">
+                  {/* 实时数据控制 */}
+                  <div className="flex items-center justify-between p-2 hover:bg-gray-700 rounded">
+                    <span className="text-sm text-gray-300">Real-time Data</span>
+                    <button
+                      onClick={() => setIsRealTimeEnabled(!isRealTimeEnabled)}
+                      className={`p-1 rounded ${isRealTimeEnabled ? 'text-green-400' : 'text-gray-500'}`}
+                    >
+                      {isRealTimeEnabled ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  
+                  {/* 视觉效果控制 */}
+                  <div className="flex items-center justify-between p-2 hover:bg-gray-700 rounded">
+                    <span className="text-sm text-gray-300">Visual Effects</span>
+                    <button
+                      onClick={() => setEffectsEnabled(!effectsEnabled)}
+                      className={`p-1 rounded ${effectsEnabled ? 'text-cyan-400' : 'text-gray-500'}`}
+                    >
+                      {effectsEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                    </button>
+                  </div>
+
+                  {/* Matrix强度控制 */}
+                  <div className="p-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-gray-400">Matrix Intensity</span>
+                      <span className="text-xs text-cyan-400">{matrixIntensity}</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="10"
+                      max="100"
+                      value={matrixIntensity}
+                      onChange={(e) => setMatrixIntensity(Number(e.target.value))}
+                      className="w-full h-1 bg-gray-700 rounded-lg appearance-none cursor-pointer slider"
+                    />
+                  </div>
+
+                  <hr className="border-gray-700" />
+                  
+                  {/* 刷新间隔控制 */}
+                  <div className="p-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs text-gray-400">Refresh Rate</span>
+                      <span className="text-xs text-cyan-400">{refreshInterval}ms</span>
+                    </div>
+                    <select 
+                      value={refreshInterval}
+                      onChange={(e) => setRefreshInterval(Number(e.target.value))}
+                      className="w-full bg-gray-700 text-white text-xs rounded p-1"
+                    >
+                      <option value={1000}>1s - High</option>
+                      <option value={3000}>3s - Normal</option>
+                      <option value={5000}>5s - Low</option>
+                      <option value={10000}>10s - Eco</option>
+                    </select>
+                  </div>
+
+                  <hr className="border-gray-700" />
+                  
+                  {/* 传统选项 */}
+                  <button className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded text-sm">
+                    <Settings className="w-4 h-4 inline mr-2" />
+                    Settings
+                  </button>
+                  <button 
+                    onClick={manualRefresh}
+                    className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded text-sm"
+                  >
+                    <RefreshCw className="w-4 h-4 inline mr-2" />
+                    Manual Refresh
+                  </button>
+                  <button className="w-full text-left p-2 text-gray-300 hover:text-white hover:bg-gray-700 rounded text-sm">
+                    <HelpCircle className="w-4 h-4 inline mr-2" />
+                    Help
+                  </button>
+                </div>
               </DropdownMenu>
 
               <button className="relative p-2 text-gray-400 hover:text-white">

@@ -249,3 +249,96 @@ body {
     padding: 16px;
   }
 }
+
+/* 增强的交互元素 */
+.slider {
+  background: linear-gradient(to right, var(--cyber-primary), var(--cyber-secondary));
+  height: 4px;
+  border-radius: 2px;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cyber-primary);
+  box-shadow: 0 0 10px var(--cyber-primary);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--cyber-primary);
+  border: none;
+  box-shadow: 0 0 10px var(--cyber-primary);
+  cursor: pointer;
+}
+
+/* 增强的光晕效果 */
+.enhanced-glow {
+  box-shadow: 
+    0 0 20px var(--cyber-primary),
+    0 0 40px var(--cyber-primary),
+    0 0 60px var(--cyber-primary);
+  animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+  from {
+    box-shadow: 
+      0 0 20px var(--cyber-primary),
+      0 0 40px var(--cyber-primary),
+      0 0 60px var(--cyber-primary);
+  }
+  to {
+    box-shadow: 
+      0 0 25px var(--cyber-primary),
+      0 0 50px var(--cyber-primary),
+      0 0 75px var(--cyber-primary);
+  }
+}
+
+/* 进度条动画 */
+@keyframes progress-fill {
+  from { width: 0%; }
+}
+
+.cyber-progress .cyber-progress-bar {
+  animation: progress-fill 2s ease-out;
+}
+
+/* 3D卡片效果 */
+.cyber-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(2deg);
+  box-shadow: 
+    0 20px 40px rgba(0, 255, 255, 0.1),
+    0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+/* Matrix字符增强 */
+.matrix-char {
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-shadow: 0 0 5px currentColor;
+  animation: matrix-fall linear infinite;
+}
+
+@keyframes matrix-fall {
+  0% {
+    transform: translateY(-10vh);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh);
+    opacity: 0;
+  }
+}
