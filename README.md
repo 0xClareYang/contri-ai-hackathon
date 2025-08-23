@@ -23,7 +23,7 @@
   - Responsive Architecture → Seamless experience across desktop and mobile devices
   - Interactive Animations → Smooth transitions powered by Framer Motion
 
-  🛡️ Technical Excellence
+  🛡️ Technical
 
   - Zero-Warning TypeScript → Full type safety with enterprise-grade code quality
   - Real-time Data Streams → Live updates with 3-second refresh intervals
