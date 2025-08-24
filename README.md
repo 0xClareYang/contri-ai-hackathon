@@ -139,8 +139,7 @@ This project addresses a critical Web3 infrastructure need. Key areas for contri
 ---
 
 <div align="center">
-  <p><strong>🤖 Generated with <a href="https://claude.ai/code">Claude Code</a></strong></p>
-  <p><em>Co-Authored-By: Claude &lt;noreply@anthropic.com&gt;</em></p>
+  <p><strong>🤖 Built with advanced AI assistance</strong></p>
   
   **⭐ Star this repository to support Web3 ecosystem integrity!**
 </div>
