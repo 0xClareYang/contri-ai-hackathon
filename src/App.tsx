@@ -30,6 +30,10 @@ import {
   Lock
 } from 'lucide-react';
 
+// 导入真实的分析服务
+import GitHubAnalysisService from './services/githubAnalysisService';
+import BlockchainAnalysisService from './services/blockchainAnalysisService';
+
 // 增强的实时数据钩子
 const useMockData = () => {
   const [metrics, setMetrics] = useState({
@@ -391,16 +395,31 @@ const App: React.FC = () => {
     manualRefresh
   } = useMockData();
 
-  const handleStartStream = (streamType: string) => {
+  // 获取分析服务实例
+  const githubService = GitHubAnalysisService.getInstance();
+  const blockchainService = BlockchainAnalysisService.getInstance();
+
+  // 分析状态
+  const [analysisData, setAnalysisData] = useState<any>({
+    github: null,
+    blockchain: null,
+    isLoading: false
+  });
+
+  const handleStartStream = async (streamType: string) => {
     setActiveStreams(prev => new Set(prev).add(streamType));
     
-    // 根据流类型打开相应的模态框
+    // 根据流类型打开相应的模态框并触发真实分析
     if (streamType === 'demo') {
       setIsLiveAnalysisOpen(true);
     } else if (streamType === 'github') {
       setIsGithubAnalysisOpen(true);
+      // 触发GitHub分析
+      await handleGitHubAnalysis();
     } else if (streamType === 'blockchain') {
       setIsBlockchainScanOpen(true);
+      // 触发区块链分析
+      await handleBlockchainAnalysis();
     }
     
     setTimeout(() => {
@@ -410,6 +429,72 @@ const App: React.FC = () => {
         return next;
       });
     }, 5000);
+  };
+
+  // GitHub分析处理
+  const handleGitHubAnalysis = async () => {
+    setAnalysisData(prev => ({ ...prev, isLoading: true }));
+    
+    try {
+      // 分析一些示例用户
+      const testUsers = ['octocat', '0xClareYang', 'torvalds'];
+      console.log('🔍 开始GitHub分析...');
+      
+      const analyses = await Promise.allSettled(
+        testUsers.map(username => githubService.analyzeUser(username))
+      );
+      
+      const successfulAnalyses = analyses
+        .filter(result => result.status === 'fulfilled')
+        .map(result => (result as PromiseFulfilledResult<any>).value);
+      
+      setAnalysisData(prev => ({ 
+        ...prev, 
+        github: successfulAnalyses,
+        isLoading: false 
+      }));
+      
+      console.log('✅ GitHub分析完成:', successfulAnalyses.length, '个用户');
+      
+    } catch (error) {
+      console.error('❌ GitHub分析失败:', error);
+      setAnalysisData(prev => ({ ...prev, isLoading: false }));
+    }
+  };
+
+  // 区块链分析处理
+  const handleBlockchainAnalysis = async () => {
+    setAnalysisData(prev => ({ ...prev, isLoading: true }));
+    
+    try {
+      // 分析一些示例地址
+      const testAddresses = [
+        '0x742d35Cc6639C0532fEb96E5Ebd8B6C24d0A8742',
+        '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'
+      ];
+      
+      console.log('🔍 开始区块链分析...');
+      
+      const analyses = await Promise.allSettled(
+        testAddresses.map(address => blockchainService.analyzeAddress(address, ['ethereum']))
+      );
+      
+      const successfulAnalyses = analyses
+        .filter(result => result.status === 'fulfilled')
+        .map(result => (result as PromiseFulfilledResult<any>).value);
+      
+      setAnalysisData(prev => ({ 
+        ...prev, 
+        blockchain: successfulAnalyses,
+        isLoading: false 
+      }));
+      
+      console.log('✅ 区块链分析完成:', successfulAnalyses.length, '个地址');
+      
+    } catch (error) {
+      console.error('❌ 区块链分析失败:', error);
+      setAnalysisData(prev => ({ ...prev, isLoading: false }));
+    }
   };
 
   const stats = [
@@ -926,69 +1011,145 @@ const App: React.FC = () => {
         title="🐙 GitHub Analysis Console"
       >
         <div className="space-y-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <GitBranch className="w-6 h-6 text-blue-400" />
-              <span className="font-mono text-green-400 text-lg">REPOSITORY SCANNING</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-              <span className="text-sm text-blue-400">ACTIVE</span>
-            </div>
-          </div>
-
-          {/* 仓库统计 */}
-          <div className="grid grid-cols-2 gap-4">
-            <motion.div 
-              className="p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/20 rounded-lg border border-blue-400/30"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Code className="w-5 h-5 text-blue-400" />
-                <span className="text-sm font-mono text-blue-400">COMMITS ANALYZED</span>
-              </div>
-              <div className="text-3xl font-bold text-white">{Math.floor(metrics.githubRate * 2.3)}</div>
-              <div className="text-xs text-gray-400">in last hour</div>
-            </motion.div>
-
-            <motion.div 
-              className="p-4 bg-gradient-to-br from-green-900/30 to-green-800/20 rounded-lg border border-green-400/30"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="flex items-center gap-2 mb-3">
-                <Users className="w-5 h-5 text-green-400" />
-                <span className="text-sm font-mono text-green-400">CONTRIBUTORS</span>
-              </div>
-              <div className="text-3xl font-bold text-white">{Math.floor(metrics.activeContributors * 0.15)}</div>
-              <div className="text-xs text-gray-400">unique developers</div>
-            </motion.div>
-          </div>
-
-          {/* 代码质量分析 */}
-          <div className="p-4 bg-gray-800/40 rounded-lg border border-cyan-400/30">
-            <h4 className="text-white font-mono mb-4 flex items-center gap-2">
-              <Brain className="w-5 h-5 text-cyan-400" />
-              AI Code Quality Analysis
-            </h4>
-            <div className="grid grid-cols-3 gap-4">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-green-400">{metrics.aiScore.toFixed(1)}%</div>
-                <div className="text-sm text-gray-400">Quality Score</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-blue-400">{Math.floor(metrics.authenticityRate)}</div>
-                <div className="text-sm text-gray-400">Authenticity</div>
-              </div>
-              <div className="text-center">
-                <div className="text-2xl font-bold text-purple-400">{Math.floor(metrics.githubRate * 0.8)}</div>
-                <div className="text-sm text-gray-400">Issues Fixed</div>
+          {analysisData.isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="flex items-center gap-3">
+                <RefreshCw className="w-6 h-6 text-blue-400 animate-spin" />
+                <span className="text-blue-400">正在分析GitHub数据...</span>
               </div>
             </div>
-          </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <GitBranch className="w-6 h-6 text-blue-400" />
+                  <span className="font-mono text-green-400 text-lg">REPOSITORY SCANNING</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-blue-400">ACTIVE</span>
+                </div>
+              </div>
+
+              {/* 真实分析结果 */}
+              {analysisData.github && analysisData.github.length > 0 && (
+                <div className="space-y-4">
+                  <h4 className="text-white font-mono mb-3">📊 分析结果</h4>
+                  {analysisData.github.slice(0, 3).map((analysis: any, index: number) => (
+                    <motion.div 
+                      key={analysis.user_profile.username}
+                      className="p-4 bg-gray-800/40 rounded-lg border border-blue-400/30"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
+                            {analysis.user_profile.username.charAt(0).toUpperCase()}
+                          </div>
+                          <div>
+                            <div className="text-white font-mono">{analysis.user_profile.username}</div>
+                            <div className="text-xs text-gray-400">
+                              {analysis.user_profile.public_repos} repos • {analysis.user_profile.followers} followers
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xl font-bold text-green-400">
+                            {analysis.contribution_analysis.authenticity_score.toFixed(1)}%
+                          </div>
+                          <div className="text-xs text-gray-400">真实性评分</div>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-4 gap-3 text-center text-xs">
+                        <div>
+                          <div className="text-blue-400 font-bold">
+                            {analysis.contribution_analysis.quality_score.toFixed(0)}%
+                          </div>
+                          <div className="text-gray-500">质量</div>
+                        </div>
+                        <div>
+                          <div className="text-purple-400 font-bold">
+                            {analysis.contribution_analysis.technical_competence.toFixed(0)}%
+                          </div>
+                          <div className="text-gray-500">技术</div>
+                        </div>
+                        <div>
+                          <div className="text-yellow-400 font-bold">
+                            {analysis.contribution_analysis.collaboration_score.toFixed(0)}%
+                          </div>
+                          <div className="text-gray-500">协作</div>
+                        </div>
+                        <div>
+                          <div className={`font-bold ${
+                            analysis.risk_assessment.sybil_probability < 30 ? 'text-green-400' : 
+                            analysis.risk_assessment.sybil_probability < 70 ? 'text-yellow-400' : 'text-red-400'
+                          }`}>
+                            {analysis.risk_assessment.sybil_probability.toFixed(0)}%
+                          </div>
+                          <div className="text-gray-500">女巫概率</div>
+                        </div>
+                      </div>
+
+                      {analysis.risk_assessment.risk_factors.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-gray-700">
+                          <div className="text-xs text-gray-400 mb-1">风险因子:</div>
+                          <div className="flex flex-wrap gap-1">
+                            {analysis.risk_assessment.risk_factors.map((factor: string, i: number) => (
+                              <span key={i} className="px-2 py-1 bg-red-900/30 text-red-400 text-xs rounded">
+                                {factor}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+
+              {/* 仓库统计 */}
+              <div className="grid grid-cols-2 gap-4">
+                <motion.div 
+                  className="p-4 bg-gradient-to-br from-blue-900/30 to-blue-800/20 rounded-lg border border-blue-400/30"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1 }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Code className="w-5 h-5 text-blue-400" />
+                    <span className="text-sm font-mono text-blue-400">已分析用户</span>
+                  </div>
+                  <div className="text-3xl font-bold text-white">
+                    {analysisData.github ? analysisData.github.length : 0}
+                  </div>
+                  <div className="text-xs text-gray-400">GitHub用户</div>
+                </motion.div>
+
+                <motion.div 
+                  className="p-4 bg-gradient-to-br from-green-900/30 to-green-800/20 rounded-lg border border-green-400/30"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <Users className="w-5 h-5 text-green-400" />
+                    <span className="text-sm font-mono text-green-400">平均真实性</span>
+                  </div>
+                  <div className="text-3xl font-bold text-white">
+                    {analysisData.github && analysisData.github.length > 0 
+                      ? (analysisData.github.reduce((sum: number, analysis: any) => 
+                          sum + analysis.contribution_analysis.authenticity_score, 0) / analysisData.github.length).toFixed(1)
+                      : '0.0'
+                    }%
+                  </div>
+                  <div className="text-xs text-gray-400">真实度评分</div>
+                </motion.div>
+              </div>
+            </>
+          )}
 
           {/* 最近活动 */}
           <div className="p-4 bg-gray-800/40 rounded-lg border border-gray-600">
